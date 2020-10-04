@@ -4,15 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-namespace ApiStudent.Controller
+namespace ApiStudent.Controllers
 {
    [ApiController]
    [Route("[controller]")]
-   public class StudentController : ControllerBase
+   public class Students : ControllerBase
    {
-       private readonly ILogger<StudentController> _logger;
+       private readonly ILogger<Students> _logger;
 
-        public StudentController(ILogger<StudentController> logger)
+        public Students(ILogger<Students> logger)
         {
             _logger = logger;
         }
