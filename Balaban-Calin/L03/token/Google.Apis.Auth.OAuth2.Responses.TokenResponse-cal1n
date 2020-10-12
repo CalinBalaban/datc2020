@@ -1,0 +1,9 @@
+{
+    "access_token": "ya29.a0AfH6SMD7jtBtpVm62nHL5H4DvdYtszwGrL1KAnVfc6bKchRPA9du6UZiRTumLKbfb8Bcigc1nk7rKImq89R0c4s94TRYAmBCKmWJCDdycfaj7guwgssJg39HKZhuBxpm4CPYr2mWie6VnBjhHttlwAwo_vCIbciHuO8",
+    "token_type": "Bearer",
+    "expires_in": 3599,
+    "refresh_token": "1//03q5uAzbydGw6CgYIARAAGAMSNwF-L9Ir59av4MzLu6i7_D9jKlFR9cXnKw5Ih44-0yCarAX1gYXVf5-Fd8NTlLOl0dJ6tN7QLPs",
+    "scope": "https://www.googleapis.com/auth/drive",
+    "Issued": "2020-10-12T14:43:23.290+03:00",
+    "IssuedUtc": "2020-10-12T11:43:23.290Z"
+}
