@@ -6,7 +6,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 using Models;
 
 
-namespace L04
+namespace L05
 {
     class Program
 	    {
@@ -14,7 +14,7 @@ namespace L04
 	        private static CloudTableClient tableClient;
 	        private static TableOperation tableOperation;
 	        private static TableResult tableResult;
-	        private static List<StudentEntity> studenti  = new List<StudentEntity>();
+	        private static List<Studententity> students  = new List<Studententity>();
 	        static void Main(string[] args)
 	        {
 	            Task.Run(async () => { await Initialize(); })
@@ -31,16 +31,16 @@ namespace L04
 	            var account = CloudStorageAccount.Parse(storageConnectionString);
 	            tableClient = account.CreateCloudTableClient();
 	
-	            studentsTable = tableClient.GetTableReference("Studenti");
+	            studentsTable = tableClient.GetTableReference("Students");
 	
 	            await studentsTable.CreateIfNotExistsAsync();
 	            
 	            int option = -1;
 	            do
 	            {
-	                System.Console.WriteLine("1.Adaugare");
-	                System.Console.WriteLine("2.Stergere");
-	                System.Console.WriteLine("3.Afisare");
+	                System.Console.WriteLine("1.Adaugare student.");
+	                System.Console.WriteLine("2.Stergere student.");
+	                System.Console.WriteLine("3.Afisare studenti.");
 	                System.Console.WriteLine("4.Iesire");
 	                System.Console.WriteLine("Alegeti optiunea: ");
 	                string opt = System.Console.ReadLine();
@@ -48,31 +48,32 @@ namespace L04
 	                switch(option)
 	                {
 	                    case 1:
-	                        await Adaugare();
+	                        await AdaugareStudent();
 	                        break;
 	                    case 2:
-	                        await Stergere();
+	                        await StergereStudent();
 	                        break;
 	                    case 3:
-	                        await Afisare();
+	                        await AfisareStudenti();
 	                        break;
 	                    case 4:
+	                        System.Console.WriteLine("La revedere");
 	                        break;
 	                }
 	            }while(option != 4);
 	            
 	        }
-	        private static async Task<StudentEntity> RetrieveRecordAsync(CloudTable table,string partitionKey,string rowKey)
+	        private static async Task<Studententity> RetrieveRecordAsync(CloudTable table,string partitionKey,string rowKey)
 	        {
-	            tableOperation = TableOperation.Retrieve<StudentEntity>(partitionKey, rowKey);
+	            tableOperation = TableOperation.Retrieve<Studententity>(partitionKey, rowKey);
 	            tableResult = await table.ExecuteAsync(tableOperation);
-	            return tableResult.Result as StudentEntity;
+	            return tableResult.Result as Studententity;
 	        }
-	        private static async Task Adaugare()
+	        private static async Task AdaugareStudent()
 	        {
 	            System.Console.WriteLine("Universitatea:");
 	            string universitate = Console.ReadLine();
-	            System.Console.WriteLine("Cnp:");
+	            System.Console.WriteLine("CNP:");
 	            string cnp = Console.ReadLine();
 	            System.Console.WriteLine("Nume:");
 	            string nume = Console.ReadLine();
@@ -80,40 +81,40 @@ namespace L04
 	            string prenume = Console.ReadLine();
 	            System.Console.WriteLine("Facultatea:");
 	            string facultate= Console.ReadLine();
-	            System.Console.WriteLine("Anul:");
+	            System.Console.WriteLine("Anul de studiu:");
 	            string an = Console.ReadLine();
 	
-	            StudentEntity student = await RetrieveRecordAsync(studentsTable, universitate, cnp);
-	            if(student == null)
+	            Studententity stud = await RetrieveRecordAsync(studentsTable, universitate, cnp);
+	            if(stud == null)
 	            {
-	                var s = new StudentEntity(universitate,cnp);
-	                s.Nume = nume;
-	                s.Prenume = prenume;
-	                s.Facultate = facultate;
-	                s.An = Convert.ToInt32(an);
-	                var insertOperation = TableOperation.Insert(s);
+	                var student = new Studententity(universitate,cnp);
+	                student.Nume = nume;
+	                student.Prenume = prenume;
+	                student.Facultate = facultate;
+	                student.An = Convert.ToInt32(an);
+	                var insertOperation = TableOperation.Insert(student);
 	                await studentsTable.ExecuteAsync(insertOperation);
-	                System.Console.WriteLine("Studentul a fost introdus");
+	                System.Console.WriteLine("Studentul a fost introdus!");
 	            }
 	            else
 	            {
-	                System.Console.WriteLine("Studentul exista deja");
+	                System.Console.WriteLine("Exista deja acest student!");
 	            }
 	        }
 	        
-	        private static async Task Stergere()
+	        private static async Task StergereStudent()
 	        {
 	            System.Console.WriteLine("Universitatea:");
 	            string universitate = Console.ReadLine();
 	            System.Console.WriteLine("CNP:");
 	            string cnp = Console.ReadLine();
 	
-	            StudentEntity student = await RetrieveRecordAsync(studentsTable, universitate, cnp);
-	            if(student != null)
+	            Studententity stud = await RetrieveRecordAsync(studentsTable, universitate, cnp);
+	            if(stud != null)
 	            {
-	                var s = new StudentEntity(universitate,cnp);
-	                s.ETag = "*";
-	                var deleteOperation = TableOperation.Delete(s);
+	                var student = new Studententity(universitate,cnp);
+	                student.ETag = "*";
+	                var deleteOperation = TableOperation.Delete(student);
 	                await studentsTable.ExecuteAsync(deleteOperation);
 	                System.Console.WriteLine("Studentul a fost sters!");
 	            }
@@ -122,31 +123,31 @@ namespace L04
 	                System.Console.WriteLine("Studentul nu exista!");
 	            }
 	        }
-	        private static async Task<List<StudentEntity>> GetAllStudents()
+	        private static async Task<List<Studententity>> GetAllStudents()
 	        {
-	            TableQuery<StudentEntity> tableQuery = new TableQuery<StudentEntity>();
+	            TableQuery<Studententity> tableQuery = new TableQuery<Studententity>();
 	            TableContinuationToken token = null;
 	            do
 	            {
-	                TableQuerySegment<StudentEntity> result = await studentsTable.ExecuteQuerySegmentedAsync(tableQuery,token);
+	                TableQuerySegment<Studententity> result = await studentsTable.ExecuteQuerySegmentedAsync(tableQuery,token);
 	                token = result.ContinuationToken;
-	                studenti.AddRange(result.Results);
+	                students.AddRange(result.Results);
 	            }while(token != null);
-	            return studenti;
+	            return students;
 	        }
-	        private static async Task Afisare()
+	        private static async Task AfisareStudenti()
 	        {
 	            await GetAllStudents();
 	
-	            foreach(StudentEntity s in studenti)
+	            foreach(Studententity std in students)
 	            {
-					Console.WriteLine("Nume : {0}", s.Nume);
-					Console.WriteLine("Prenume : {0}", s.Prenume);
-	                Console.WriteLine("Facultatea : {0}", s.Facultate);
-	                Console.WriteLine("An : {0}", s.An);
+					Console.WriteLine("Nume : {0}", std.Nume);
+					Console.WriteLine("Prenume : {0}", std.Prenume);
+	                Console.WriteLine("Facultatea : {0}", std.Facultate);
+	                Console.WriteLine("An : {0}", std.An);
 	                Console.WriteLine("\n");
 	            }
-	            studenti.Clear();
+	            students.Clear();
 	            
 	        }
 	    }

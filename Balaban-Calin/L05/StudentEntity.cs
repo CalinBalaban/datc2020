@@ -4,14 +4,14 @@ using System;
 	
 	namespace Models
 	{
-	    public class StudentEntity : TableEntity
+	    public class Studententity : TableEntity
 	    {
-	        public StudentEntity(string Universitate, string Cnp)
+	        public Studententity(string Universitate, string Cnp)
 	        {
 	            this.PartitionKey = Universitate;
 	            this.RowKey = Cnp;
 	        }
-	        public StudentEntity() {}
+	        public Studententity() {}
 	
 	        public string Nume {get; set;}
 	        public string Prenume {get; set;}
